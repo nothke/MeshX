@@ -3,7 +3,7 @@ Mesh extensions for unity
 
 MeshX is a library for creating procedural meshes as simple as possible, for example:
 
-```gameObject.InitMesh(MeshX.Cube());```
+~~~gameObject.InitMesh(MeshX.Cube());~~~
 
 This line will create a unit cube, create a MeshFilter, and apply the cube to it, create a MeshRenderer and apply a default unity material to it, all in just one short line.
 
