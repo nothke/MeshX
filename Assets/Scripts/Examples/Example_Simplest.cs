@@ -10,6 +10,6 @@ public class Example_Simplest : MonoBehaviour
 
     void Start()
     {
-        gameObject.InitializeMesh(MeshX.Cube(), material);
+        gameObject.InitMesh(MeshX.Cube(), material);
     }
 }

@@ -738,6 +738,7 @@ namespace MeshXtensions
         // old cubes - used in some projects
         // draw quad? need to see that
 
+            [System.Obsolete]
         public static Mesh GetCube(Vector3 rootPos, float length, float width, float height, bool bottomPivot, int subTiles, float uvScale)
         {
             Mesh mesh = new Mesh();
@@ -862,6 +863,7 @@ namespace MeshXtensions
             return mesh;
         }
 
+        [System.Obsolete]
         public static Mesh GetCubeTest(Vector3 rootPos, float length, float width, float height, bool bottomPivot, int subTiles, float uvScale)
         {
             Mesh mesh = new Mesh();
@@ -1037,29 +1039,7 @@ namespace MeshXtensions
 
         #endregion
 
-
-
-
-        [System.Obsolete]
-        public static void InitMesh(GameObject go, Mesh mesh = null, Material material = null)
-        {
-            if (material == null) material = GetDefaultMaterial();
-
-            MeshFilter mf = go.GetComponent<MeshFilter>();
-
-            if (mf == null)
-                mf = go.AddComponent<MeshFilter>();
-
-            if (mesh) mf.mesh = mesh;
-
-            MeshRenderer r = go.GetComponent<MeshRenderer>();
-
-            if (r == null)
-                r = go.AddComponent<MeshRenderer>();
-
-            r.sharedMaterial = material;
-        }
-
+        
         /*
         public static void CleanMesh(Mesh mesh)
         {
@@ -1179,7 +1159,7 @@ namespace MeshXtensions
         /// <param name="go"></param>
         /// <param name="mesh">A mesh to be set to MeshFilter</param>
         /// <param name="material">A material to be set to the MeshRenderer</param>
-        public static void InitializeMesh(this GameObject go, Mesh mesh = null, Material material = null)
+        public static void InitMesh(this GameObject go, Mesh mesh = null, Material material = null)
         {
             if (material == null) material = MeshX.GetDefaultMaterial();
 
@@ -1206,14 +1186,14 @@ namespace MeshXtensions
         /// <param name="mesh">The mesh to be applied to MeshFilter</param>
         /// <param name="material">The material to be assigned to MeshRenderer</param>
         /// <returns>Returns new separate object</returns>
-        public static GameObject InitializeSeparateMesh(this GameObject thisObject, Mesh mesh = null, Material material = null)
+        public static GameObject InitChildMesh(this GameObject thisObject, Mesh mesh = null, Material material = null)
         {
             GameObject go = new GameObject("MeshObject");
             go.transform.parent = thisObject.transform;
             go.transform.localPosition = Vector3.zero;
             go.transform.localEulerAngles = Vector3.zero;
 
-            go.InitializeMesh(mesh, material);
+            go.InitMesh(mesh, material);
 
             return go;
         }
@@ -1229,7 +1209,7 @@ namespace MeshXtensions
             {
                 if (autoAddFilter)
                 {
-                    thisObject.InitializeMesh(mesh);
+                    thisObject.InitMesh(mesh);
                     return;
                 }
                 else
@@ -1251,7 +1231,7 @@ namespace MeshXtensions
             {
                 if (autoAddRenderer)
                 {
-                    thisObject.InitializeMesh(null, material); // TEST this
+                    thisObject.InitMesh(null, material); // TEST this
                     return;
                 }
                 else
