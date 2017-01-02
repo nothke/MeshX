@@ -50,6 +50,8 @@ namespace MeshXtensions
 
         public void CombineWith(Geom geom)
         {
+            int vertCount = vertices.Count;
+
             if (vertices != null && geom.vertices != null)
                 vertices.AddRange(geom.vertices);
 
@@ -64,11 +66,10 @@ namespace MeshXtensions
 
             if (triangles != null && geom.triangles != null)
             {
-                int triCount = triangles.Count;
                 int oTriCount = geom.triangles.Count;
 
                 for (int i = 0; i < oTriCount; i++)
-                    triangles.Add(geom.triangles[i].Offset(triCount));
+                    triangles.Add(geom.triangles[i].Offset(vertCount));
             }
         }
 
@@ -95,9 +96,9 @@ namespace MeshXtensions
                 tris.Add(triangles[i].v3);
             }
 
-            m.SetTriangles(tris, 0);
+            m.SetTriangles(tris, 0, true);
 
-            m.RecalculateBounds();
+            //m.RecalculateBounds();
 
             return m;
         }
