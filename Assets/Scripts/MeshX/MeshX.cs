@@ -237,9 +237,9 @@ namespace MeshXtensions
                 foreach (var tri in faces)
                 {
                     // replace triangle by 4 triangles
-                    int a = getMiddlePoint(tri.v1, tri.v2, ref vertList, ref middlePointIndexCache, radius);
-                    int b = getMiddlePoint(tri.v2, tri.v3, ref vertList, ref middlePointIndexCache, radius);
-                    int c = getMiddlePoint(tri.v3, tri.v1, ref vertList, ref middlePointIndexCache, radius);
+                    int a = GetMiddlePoint(tri.v1, tri.v2, ref vertList, ref middlePointIndexCache, radius);
+                    int b = GetMiddlePoint(tri.v2, tri.v3, ref vertList, ref middlePointIndexCache, radius);
+                    int c = GetMiddlePoint(tri.v3, tri.v1, ref vertList, ref middlePointIndexCache, radius);
 
                     faces2.Add(new Triangle(tri.v1, a, c));
                     faces2.Add(new Triangle(tri.v2, b, a));
@@ -1173,6 +1173,12 @@ namespace MeshXtensions
         // INITIALIZATION
         //----------------
 
+        /// <summary>
+        /// Creates necessary components to render a mesh
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="mesh">A mesh to be set to MeshFilter</param>
+        /// <param name="material">A material to be set to the MeshRenderer</param>
         public static void InitializeMesh(this GameObject go, Mesh mesh = null, Material material = null)
         {
             if (material == null) material = MeshX.GetDefaultMaterial();
@@ -1402,6 +1408,10 @@ namespace MeshXtensions
         #region Utils of utils
 
         static MethodInfo getBuiltinExtraResourcesMethod;
+
+        /// <summary>
+        /// Gets Unity editor's default material. NOTE: It does not work in build, null will be returned.
+        /// </summary>
         public static Material GetDefaultMaterial()
         {
 #if !UNITY_EDITOR
@@ -1446,19 +1456,21 @@ namespace MeshXtensions
             return vs;
         }
 
-        static float RtF(float f, int divisions)
+        /// <summary>
+        /// Round to fraction
+        /// </summary>
+        /// <param name="f">Input value</param>
+        /// <param name="fraction">Fraction to round to: 4 means value will be rounded to 0.25f</param>
+        static float RtF(float f, int fraction)
         {
-            if (divisions == 0) divisions = 1; // overrides divisions
-
+            if (fraction == 0) fraction = 1; // overrides divisions
+            
             float sf = f;
 
             // 4.2    (4.2 * 4) = 17            17 /4 = 4.25
             // 0.1    (0.1 * 4) = 0.4 = 0         
 
-            sf *= divisions;
-
-            //sf = Mathf.Ceil(sf);
-
+            sf *= fraction;
 
             if (sf <= 0.5f && sf != 0)
                 sf = Mathf.Ceil(sf);
@@ -1467,7 +1479,7 @@ namespace MeshXtensions
                 sf = Mathf.Round(sf);
             }
 
-            return sf / divisions;
+            return sf / fraction;
         }
 
         static Vector2[] NormalProjection(Vector3[] vertices, Vector3[] normals)
@@ -1510,7 +1522,7 @@ namespace MeshXtensions
         }
 
         // return index of point in the middle of p1 and p2
-        private static int getMiddlePoint(int p1, int p2, ref List<Vector3> vertices, ref Dictionary<long, int> cache, float radius)
+        private static int GetMiddlePoint(int p1, int p2, ref List<Vector3> vertices, ref Dictionary<long, int> cache, float radius)
         {
             // first check if we have it already
             bool firstIsSmaller = p1 < p2;
@@ -1544,8 +1556,18 @@ namespace MeshXtensions
             return i;
         }
 
+        /// <summary>
+        /// Returns Vector3 with absolute values
+        /// </summary>
+        /// <returns>Vector3 with absolute values</returns>
         static Vector3 VAbs(Vector3 v) { return new Vector3(Mathf.Abs(v.x), Mathf.Abs(v.y), Mathf.Abs(v.z)); }
 
+        [System.Obsolete("Use Vector3 extension method instead")]
+        /// <summary>
+        /// Converts Vector3 array to Vector2 array
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
         static Vector2[] ToV2A(Vector3[] v)
         {
             Vector2[] v2 = new Vector2[v.Length];
@@ -1557,6 +1579,22 @@ namespace MeshXtensions
             }
 
             return v2;
+        }
+
+        /// <summary>
+        /// Converts Vector3 array to Vector2 array by discarding the z value
+        /// </summary>
+        public static Vector2[] ToVector2Array(this Vector3[] v3s)
+        {
+            Vector2[] v2s = new Vector2[v3s.Length];
+
+            for (int i = 0; i < v3s.Length; i++)
+            {
+                v2s[i].x = v3s[i].x;
+                v2s[i].y = v3s[i].y;
+            }
+
+            return v2s;
         }
 
         #endregion
