@@ -8,7 +8,11 @@ MeshX is a library for creating procedural meshes as simple as possible, for exa
 This line will create a unit cube, create a MeshFilter, and apply the cube to it, create a MeshRenderer and apply a default unity material to it, all in just one short line.
 
 Also,
-```gameObject.InitChildMesh(MeshX.Cube());```
+
+```csharp
+gameObject.InitChildMesh(MeshX.Cube());
+```
+
 
 will do the same thing, but to a new, child GameObject.
 
