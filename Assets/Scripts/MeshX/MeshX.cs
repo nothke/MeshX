@@ -102,8 +102,32 @@ namespace MeshXtensions
 
             return m;
         }
-    }
 
+        /// <summary>
+        /// Returns a copy of this Geom
+        /// </summary>
+        public Geom Clone()
+        {
+            Geom g = new Geom();
+
+            if (vertices != null)
+                g.vertices = new List<Vector3>(vertices);
+
+            if (normals != null)
+                g.normals = new List<Vector3>(normals);
+
+            if (tangents != null)
+                g.tangents = new List<Vector4>(tangents);
+
+            if (uvs != null)
+                g.uvs = new List<Vector2>(uvs);
+
+            if (triangles != null)
+                g.triangles = new List<Triangle>(triangles);
+
+            return g;
+        }
+    }
 
     public struct MeshElement
     {
@@ -145,6 +169,7 @@ namespace MeshXtensions
 
             return tris;
         }
+
     }
 
     public static class MeshX
@@ -258,7 +283,89 @@ namespace MeshXtensions
 
             return geom;
         }
-        
+
+        public static Geom GeomGrid(int xSize, int ySize, float xSeparation = 1, float ySeparation = 1, bool center = false)
+        {
+            Geom g = new Geom();
+
+            // Vertices
+
+            g.vertices = new List<Vector3>();
+
+            float xOffset = center ? -(xSeparation * xSize) * 0.5f : 0;
+            float yOffset = center ? -(ySeparation * ySize) * 0.5f : 0;
+
+            for (int i = 0, y = 0; y <= ySize; y++)
+                for (int x = 0; x <= xSize; x++, i++)
+                    g.vertices.Add(new Vector3(xOffset + x * xSeparation, 0, yOffset + y * ySeparation));
+
+            // Normals
+
+            g.normals = new List<Vector3>();
+
+            int vertCount = g.vertices.Count;
+
+            for (int i = 0; i < vertCount; i++)
+                g.normals.Add(Vector3.up);
+
+            // Triangles
+
+            g.triangles = new List<Triangle>();
+
+            int[] triangles = new int[xSize * ySize * 6];
+            for (int ti = 0, vi = 0, y = 0; y < ySize; y++, vi++)
+            {
+                for (int x = 0; x < xSize; x++, ti += 6, vi++)
+                {
+                    triangles[ti] = vi;
+                    triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+                    triangles[ti + 4] = triangles[ti + 1] = vi + xSize + 1;
+                    triangles[ti + 5] = vi + xSize + 2;
+                }
+            }
+
+            int triangleNum = xSize * ySize * 2;
+
+            for (int i = 0; i < triangleNum; i++)
+            {
+                g.triangles.Add(new Triangle(
+                    triangles[i * 3],
+                    triangles[i * 3 + 1],
+                    triangles[i * 3 + 2]));
+            }
+
+            return g;
+        }
+
+        public static Geom GeomQuadSphere(int divisions, float radius = 1)
+        {
+            // The top
+            Geom geom = GeomGrid(divisions, divisions, 1, 1, true);
+            geom.Translate(Vector3.up * divisions * 0.5f);
+
+            Geom bottom = geom.Clone();
+            bottom.Rotate(180, Vector3.right);
+            geom.CombineWith(bottom);
+
+            Geom leftRight = geom.Clone();
+            leftRight.Rotate(90, Vector3.right);
+
+            Geom frontBack = leftRight.Clone();
+            frontBack.Rotate(90, Vector3.up);
+
+            geom.CombineWith(leftRight);
+            geom.CombineWith(frontBack);
+
+            geom.normals = new List<Vector3>();
+
+            for (int i = 0; i < geom.vertices.Count; i++)
+            {
+                geom.vertices[i] = geom.vertices[i].normalized * radius;
+                geom.normals.Add(geom.vertices[i].normalized);
+            }
+
+            return geom;
+        }
 
         //----------------
         // MESH CREATION
