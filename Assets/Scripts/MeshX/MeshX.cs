@@ -738,7 +738,7 @@ namespace MeshXtensions
         // old cubes - used in some projects
         // draw quad? need to see that
 
-            [System.Obsolete]
+        [System.Obsolete]
         public static Mesh GetCube(Vector3 rootPos, float length, float width, float height, bool bottomPivot, int subTiles, float uvScale)
         {
             Mesh mesh = new Mesh();
@@ -858,7 +858,6 @@ namespace MeshXtensions
             mesh.triangles = triangles;
 
             mesh.RecalculateBounds();
-            ;
 
             return mesh;
         }
@@ -967,6 +966,7 @@ namespace MeshXtensions
             return mesh;
         }
 
+        [System.Obsolete]
         public static Mesh Quad(Vector3 rootPos, float width, float height, Vector3 normalDir, float deviateNormal = 0, bool bottomPivot = false, int subTiles = 1, float uvScale = 1)
         {
             Mesh mesh = new Mesh();
@@ -1039,7 +1039,7 @@ namespace MeshXtensions
 
         #endregion
 
-        
+
         /*
         public static void CleanMesh(Mesh mesh)
         {
@@ -1444,7 +1444,7 @@ namespace MeshXtensions
         static float RtF(float f, int fraction)
         {
             if (fraction == 0) fraction = 1; // overrides divisions
-            
+
             float sf = f;
 
             // 4.2    (4.2 * 4) = 17            17 /4 = 4.25
