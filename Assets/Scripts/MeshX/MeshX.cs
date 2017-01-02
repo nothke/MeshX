@@ -8,6 +8,102 @@ using UnityEditor;
 
 namespace MeshXtensions
 {
+    /// <summary>
+    /// A Geom is a threadable Mesh
+    /// </summary>
+    public class Geom
+    {
+        public List<Vector3> vertices;
+        public List<Vector3> normals;
+        public List<Vector4> tangents;
+        public List<Vector2> uvs;
+        public List<Triangle> triangles;
+
+        #region Transformations
+
+        public void Translate(Vector3 by)
+        {
+            if (vertices == null || by == Vector3.zero) return;
+            if (vertices.Count == 0) return;
+
+            int vertexCount = vertices.Count;
+
+            for (int vert = 0; vert < vertexCount; vert++)
+                vertices[vert] += by;
+        }
+
+        public void Rotate(float angle, Vector3 axis)
+        {
+            if (vertices == null) return;
+            if (vertices.Count == 0) return;
+
+            if (angle == 0 || axis == Vector3.zero) return;
+
+            int vertexCount = vertices.Count;
+
+            Quaternion qAngle = Quaternion.AngleAxis(angle, axis);
+            for (int vert = 0; vert < vertexCount; vert++)
+            {
+                vertices[vert] = qAngle * vertices[vert];
+            }
+        }
+
+        public void CombineWith(Geom geom)
+        {
+            if (vertices != null && geom.vertices != null)
+                vertices.AddRange(geom.vertices);
+
+            if (normals != null && geom.normals != null)
+                normals.AddRange(geom.normals);
+
+            if (tangents != null && geom.tangents != null)
+                tangents.AddRange(geom.tangents);
+
+            if (uvs != null && geom.uvs != null)
+                uvs.AddRange(geom.uvs);
+
+            if (triangles != null && geom.triangles != null)
+            {
+                int triCount = triangles.Count;
+                int oTriCount = geom.triangles.Count;
+
+                for (int i = 0; i < oTriCount; i++)
+                    triangles.Add(geom.triangles[i].Offset(triCount));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Converts to UnityEngine.Mesh. CANNOT RUN ON A THREAD!
+        /// </summary>
+        public Mesh ToMesh()
+        {
+            Mesh m = new Mesh();
+
+            m.SetVertices(vertices);
+            m.SetNormals(normals);
+            m.SetTangents(tangents);
+            m.SetUVs(0, uvs);
+
+            List<int> tris = new List<int>();
+
+            for (int i = 0; i < triangles.Count; i++)
+            {
+                tris.Add(triangles[i].v1);
+                tris.Add(triangles[i].v2);
+                tris.Add(triangles[i].v3);
+            }
+
+            m.SetTriangles(tris, 0);
+
+            m.RecalculateBounds();
+
+            return m;
+        }
+    }
+
+
     public struct MeshElement
     {
         public Vector3[] vertices;
@@ -30,6 +126,11 @@ namespace MeshXtensions
             this.v3 = v3;
         }
 
+        public Triangle Offset(int by)
+        {
+            return new Triangle(v1 + by, v2 + by, v3 + by);
+        }
+
         public static int[] ToIntArray(Triangle[] triangles)
         {
             int[] tris = new int[triangles.Length * 3];
@@ -48,8 +149,121 @@ namespace MeshXtensions
     public static class MeshX
     {
         //----------------
+        // GEOM CREATION
+        //----------------
+
+        public static Geom GeomCube(Vector3 size)
+        {
+            Geom geom = new Geom();
+
+            #region Vertices
+            Vector3 p0 = new Vector3(-size.x * .5f, -size.y * .5f, size.z * .5f);
+            Vector3 p1 = new Vector3(size.x * .5f, -size.y * .5f, size.z * .5f);
+            Vector3 p2 = new Vector3(size.x * .5f, -size.y * .5f, -size.z * .5f);
+            Vector3 p3 = new Vector3(-size.x * .5f, -size.y * .5f, -size.z * .5f);
+
+            Vector3 p4 = new Vector3(-size.x * .5f, size.y * .5f, size.z * .5f);
+            Vector3 p5 = new Vector3(size.x * .5f, size.y * .5f, size.z * .5f);
+            Vector3 p6 = new Vector3(size.x * .5f, size.y * .5f, -size.z * .5f);
+            Vector3 p7 = new Vector3(-size.x * .5f, size.y * .5f, -size.z * .5f);
+
+            Vector3[] vertices = new Vector3[]
+            {
+	            // Bottom
+	            p0, p1, p2, p3,
+ 
+	            // Left
+	            p7, p4, p0, p3,
+ 
+	            // Front
+	            p4, p5, p1, p0,
+ 
+	            // Back
+	            p6, p7, p3, p2,
+ 
+	            // Right
+	            p5, p6, p2, p1,
+ 
+	            // Top
+	            p7, p6, p5, p4
+            };
+
+            geom.vertices = new List<Vector3>(vertices);
+
+            #endregion
+
+            #region Normals
+            Vector3 up = Vector3.up;
+            Vector3 down = Vector3.down;
+            Vector3 front = Vector3.forward;
+            Vector3 back = Vector3.back;
+            Vector3 left = Vector3.left;
+            Vector3 right = Vector3.right;
+
+            Vector3[] normals = new Vector3[]
+            {
+	        // Bottom
+	        down, down, down, down,
+ 
+	        // Left
+	        left, left, left, left,
+ 
+	        // Front
+	        front, front, front, front,
+ 
+	        // Back
+	        back, back, back, back,
+ 
+	        // Right
+	        right, right, right, right,
+ 
+	        // Top
+	        up, up, up, up
+            };
+
+            geom.normals = new List<Vector3>(normals);
+            #endregion
+
+            #region Triangles
+
+            geom.triangles = new List<Triangle>();
+
+            // Bottom
+            geom.triangles.Add(new Triangle(3, 1, 0));
+            geom.triangles.Add(new Triangle(3, 2, 1));
+
+            // Left
+            geom.triangles.Add(new Triangle(3 + 4 * 1, 1 + 4 * 1, 0 + 4 * 1));
+            geom.triangles.Add(new Triangle(3 + 4 * 1, 2 + 4 * 1, 1 + 4 * 1));
+
+            // Front
+            geom.triangles.Add(new Triangle(3 + 4 * 2, 1 + 4 * 2, 0 + 4 * 2));
+            geom.triangles.Add(new Triangle(3 + 4 * 2, 2 + 4 * 2, 1 + 4 * 2));
+
+            // Back
+            geom.triangles.Add(new Triangle(3 + 4 * 3, 1 + 4 * 3, 0 + 4 * 3));
+            geom.triangles.Add(new Triangle(3 + 4 * 3, 2 + 4 * 3, 1 + 4 * 3));
+
+            // Right
+            geom.triangles.Add(new Triangle(3 + 4 * 4, 1 + 4 * 4, 0 + 4 * 4));
+            geom.triangles.Add(new Triangle(3 + 4 * 4, 2 + 4 * 4, 1 + 4 * 4));
+
+            // Top
+            geom.triangles.Add(new Triangle(3 + 4 * 5, 1 + 4 * 5, 0 + 4 * 5));
+            geom.triangles.Add(new Triangle(3 + 4 * 5, 2 + 4 * 5, 1 + 4 * 5));
+
+
+            #endregion
+
+            return geom;
+        }
+
+        //----------------
         // MESH CREATION
         //----------------
+
+
+
 
         /// <summary>
         /// Creates unit cube
@@ -1198,9 +1412,6 @@ namespace MeshXtensions
             return go;
         }
 
-
-        #region Mesh Transformations
-
         public static void SetMesh(this GameObject thisObject, Mesh mesh, bool autoAddFilter = true)
         {
             MeshFilter mf = thisObject.GetComponent<MeshFilter>();
@@ -1243,6 +1454,8 @@ namespace MeshXtensions
 
             mr.material = material;
         }
+
+        #region Mesh Transformations
 
         // Mesh operations
 
