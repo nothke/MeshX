@@ -11,7 +11,7 @@ public class Example_QuadSphere : MonoBehaviour
 
     void Start()
     {
-        Geom g = MeshX.GeomQuadSphere(100, 10);
+        Geom g = MeshX_QuadSphere.GeomQuadSphere(100, 10);
 
         NoiseMethod method = Noise.simplexMethods[2];
 
