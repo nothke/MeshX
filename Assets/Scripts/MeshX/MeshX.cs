@@ -18,6 +18,7 @@ namespace MeshXtensions
         public List<Vector4> tangents;
         public List<Vector2> uvs;
         public List<Triangle> triangles;
+        public List<Color> colors;
 
         #region Transformations
 
@@ -86,6 +87,7 @@ namespace MeshXtensions
             m.SetNormals(normals);
             m.SetTangents(tangents);
             m.SetUVs(0, uvs);
+            m.SetColors(colors);
 
             List<int> tris = new List<int>();
 
@@ -124,6 +126,9 @@ namespace MeshXtensions
 
             if (triangles != null)
                 g.triangles = new List<Triangle>(triangles);
+
+            if (colors != null)
+                g.colors = new List<Color>(colors);
 
             return g;
         }
@@ -362,6 +367,43 @@ namespace MeshXtensions
             {
                 geom.vertices[i] = geom.vertices[i].normalized * radius;
                 geom.normals.Add(geom.vertices[i].normalized);
+            }
+
+            return geom;
+        }
+
+        public enum Side { Top, Bottom, Left, Right, Front, Back }
+
+        public static Geom GeomQuadSphereSide(Side side, int divisions = 10, float radius = 1)
+        {
+            Geom geom = GeomGrid(divisions, divisions, 1, 1, true);
+            geom.Translate(Vector3.up * divisions * 0.5f);
+
+            switch (side)
+            {
+                case Side.Top:
+                    break;
+                case Side.Bottom:
+                    geom.Rotate(180, Vector3.right);
+                    break;
+                case Side.Left:
+                    geom.Rotate(90, Vector3.forward);
+                    break;
+                case Side.Right:
+                    geom.Rotate(-90, Vector3.forward);
+                    break;
+                case Side.Front:
+                    geom.Rotate(90, Vector3.right);
+                    break;
+                case Side.Back:
+                    geom.Rotate(-90, Vector3.right);
+                    break;
+            }
+
+            for (int i = 0; i < geom.vertices.Count; i++)
+            {
+                geom.vertices[i] = geom.vertices[i].normalized * radius;
+                //geom.normals.Add(geom.vertices[i].normalized);
             }
 
             return geom;

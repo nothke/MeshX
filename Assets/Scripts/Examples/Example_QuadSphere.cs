@@ -6,6 +6,8 @@ using MeshXtensions;
 
 public class Example_QuadSphere : MonoBehaviour
 {
+    public Material material;
+    public Gradient gradient;
 
     void Start()
     {
@@ -15,6 +17,8 @@ public class Example_QuadSphere : MonoBehaviour
 
         float mult = 0.05f;
         float thres = -0.1f;
+
+        g.colors = new List<Color>();
 
         for (int i = 0; i < g.vertices.Count; i++)
         {
@@ -34,11 +38,12 @@ public class Example_QuadSphere : MonoBehaviour
                 g.vertices[i] *= 1 + sample.value * mult;
                 g.normals[i] = (normal - sample.derivative * 1).normalized;
             }
+
+            g.colors.Add(gradient.Evaluate(0.5f + sample.value));
         }
 
         Mesh m = g.ToMesh();
-        //m.RecalculateNormals();
 
-        gameObject.InitMesh(m);
+        gameObject.InitMesh(m, material);
     }
 }
