@@ -166,36 +166,6 @@ public class TreeNode
 
     #region Neighbours
 
-    public TreeNode N
-    {
-        get
-        {
-            if (parent == null)
-                return null;
-
-            if (parent.SW == this)
-            {
-                if (parent.children[0].IsSplit)
-                    return parent.children[0].children[2];
-
-                return parent.children[0];
-            }
-
-
-            if (parent.SE == this)
-                return parent.children[1];
-
-            return parent.N;
-        }
-    }
-
-
-
-    public static bool IsNorth(Quadrant q) { return q == Quadrant.NE || q == Quadrant.NW; }
-    public static bool IsSouth(Quadrant q) { return q == Quadrant.SE || q == Quadrant.SW; }
-    public static bool IsEast(Quadrant q) { return q == Quadrant.NE || q == Quadrant.SE; }
-    public static bool IsWest(Quadrant q) { return q == Quadrant.NW || q == Quadrant.SW; }
-
     public Quadrant Quadrant;
 
     public TreeNode GetNeighbour(Side side)
@@ -369,56 +339,10 @@ public class TreeNode
         return null;
     }
 
-    public TreeNode S
-    {
-        get
-        {
-            if (parent == null)
-                return null;
-
-            if (parent.children[0] == this)
-                return parent.children[2];
-
-            if (parent.children[1] == this)
-                return parent.children[3];
-
-            return parent.S;
-        }
-    }
-
-    public TreeNode W
-    {
-        get
-        {
-            if (parent == null)
-                return null;
-
-            if (parent.children[1] == this)
-                return parent.children[0];
-
-            if (parent.children[3] == this)
-                return parent.children[2];
-
-            return parent.W;
-        }
-    }
-
-    public TreeNode E
-    {
-        get
-        {
-            if (parent == null)
-                return null;
-
-            if (parent.children[0] == this)
-                return parent.children[1];
-
-            if (parent.children[2] == this)
-                return parent.children[3];
-
-            return parent.E;
-        }
-    }
+    public TreeNode N { get { return GetNeighbour(Side.North); } }
+    public TreeNode S { get { return GetNeighbour(Side.South); } }
+    public TreeNode W { get { return GetNeighbour(Side.West); } }
+    public TreeNode E { get { return GetNeighbour(Side.East); } }
 
     #endregion
 
@@ -642,7 +566,7 @@ public class MyOwnQuadTree : MonoBehaviour
 {
     Tree tree;
 
-    int maxDepth = 3;
+    public int maxDepth = 3;
 
     public float size = 100;
 
@@ -677,7 +601,7 @@ public class MyOwnQuadTree : MonoBehaviour
     void GetPos()
     {
         if (trackThis.childCount == 0)
-            tree.GenerateDepthForPoint(trackThis.position, 6);
+            tree.GenerateDepthForPoint(trackThis.position, maxDepth);
         else
         {
             Vector3[] childPs = new Vector3[trackThis.childCount];
@@ -687,7 +611,7 @@ public class MyOwnQuadTree : MonoBehaviour
                 childPs[i] = trackThis.GetChild(i).position;
             }
 
-            tree.SplitToPoints(childPs, 5);
+            tree.SplitToPoints(childPs, maxDepth);
         }
     }
 
