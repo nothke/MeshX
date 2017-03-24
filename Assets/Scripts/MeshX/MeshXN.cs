@@ -150,7 +150,7 @@ namespace MeshXtensions
 
     public class TestClass
     {
-        void Test()
+        Mesh TestMesh()
         {
             Strip s = new Strip(
                 -1, 0, -1,
@@ -177,7 +177,7 @@ namespace MeshXtensions
 
             Fan f2 = new Fan(v1a, v1b, v2a, v2b, v3a, v3b);
 
-            Mesh mesh = MeshXN.Combine(s, f, f2);
+            return MeshXN.Combine(s, f, f2);
         }
     }
 

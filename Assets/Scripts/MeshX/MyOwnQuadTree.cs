@@ -414,7 +414,7 @@ public class TreeNode
         }
     }
 
-    bool isTarget;
+    //bool isTarget;
 
 
 
@@ -427,7 +427,7 @@ public class TreeNode
             if (bounds.Contains(point))
             {
                 //BalanceNeighbours();
-                isTarget = true;
+                //isTarget = true;
                 targetNode = this;
             }
 
