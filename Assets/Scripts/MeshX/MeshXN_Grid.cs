@@ -10,6 +10,8 @@ namespace MeshXtensions
 
         public int length { get { return (vertices.Length / width); } }
 
+        public int size { get { return vertices.Length; } }
+
         public Grid(int width, params Vector3[] points) : base(points)
         {
             this.width = width;
