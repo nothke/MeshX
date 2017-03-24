@@ -132,7 +132,13 @@ public class Tree
             }
         }
     }
+
+    public float GetWidthAtDepth(int depth)
+    {
+        return bounds.width / Mathf.Pow(2, depth);
+    }
 }
+
 
 public static class Extension
 {
@@ -592,28 +598,61 @@ public class MyOwnQuadTree : MonoBehaviour
         tree.root.children[0].children[2].Split();
     }
 
+    Vector2 inTile;
+    Vector2 lastInTile;
+
     void Update()
     {
+        
+
         GetPos();
 
-        tree.BalanceT();
+        
     }
 
     void GetPos()
     {
         if (trackThis.childCount == 0)
+        {
+            Vector3 tPos = trackThis.position;
+
+            float minWidth = tree.GetWidthAtDepth(maxDepth);
+
+            inTile = new Vector2(Mathf.Round(tPos.x * minWidth) / minWidth, Mathf.Round(tPos.z * minWidth) / minWidth);
+            
             tree.GenerateDepthForPoint(trackThis.position, maxDepth);
+
+        }
         else
         {
             Vector3[] childPs = new Vector3[trackThis.childCount];
 
             for (int i = 0; i < childPs.Length; i++)
-            {
                 childPs[i] = trackThis.GetChild(i).position;
+
+            Vector3 tPos = childPs[0];
+
+            float minWidth = tree.GetWidthAtDepth(maxDepth);
+
+            inTile = new Vector2(Mathf.Floor(tPos.x / minWidth), Mathf.Floor(tPos.z / minWidth));
+
+            if (inTile != lastInTile)
+            {
+                tree.SplitToPoints(childPs, maxDepth);
+                tree.BalanceT();
+
+                Debug.Log(minWidth + " " + childPs[0] + " " + inTile);
+
+                if (QuadTreeTerrain.e)
+                {
+                    QuadTreeTerrain.e.RegenerateTerrain();
+                }
             }
 
-            tree.SplitToPoints(childPs, maxDepth);
+            
         }
+
+        lastInTile = inTile;
     }
 
     private void OnDrawGizmos()

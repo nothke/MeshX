@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class QuadTreeTerrain : MonoBehaviour
 {
+    public static QuadTreeTerrain e;
+    void Awake() { e = this; }
 
     MyOwnQuadTree quadTree;
 
@@ -14,10 +16,34 @@ public class QuadTreeTerrain : MonoBehaviour
         StartCoroutine(WaitFrame());
     }
 
+
     IEnumerator WaitFrame()
     {
         yield return null;
 
+        GenerateTerrain();
+    }
+
+    public void RegenerateTerrain()
+    {
+        DestroyTerrain();
+        GenerateTerrain();
+    }
+
+    void DestroyTerrain()
+    {
+        for (int i = 0; i < terrains.Count; i++)
+        {
+            Destroy(terrains[i]);
+        }
+
+        terrains.Clear();
+    }
+
+    List<GameObject> terrains = new List<GameObject>();
+
+    void GenerateTerrain()
+    {
         List<TreeNode> treeNodes = quadTree.tree.root.GetAllChildren();
 
         foreach (var treeNode in treeNodes)
@@ -35,6 +61,8 @@ public class QuadTreeTerrain : MonoBehaviour
             TerrainTile tile = go.AddComponent<TerrainTile>();
             tile.offset = treeNode.bounds.min;
             tile.width = quadTree.size / Mathf.Pow(2, treeNode.depth);
+
+            terrains.Add(tile.gameObject);
         }
     }
 }
