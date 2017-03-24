@@ -35,6 +35,84 @@ namespace MeshXtensions
             return new Grid(width, points);
         }
 
+        public static Grid operator +(Grid grid, float[] heightfield2)
+        {
+            for (int y = 0; y < grid.length; y++)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    grid.vertices[y * grid.width + x] += Vector3.up * heightfield2[y * grid.width + x];
+                }
+            }
+
+            return grid;
+        }
+
+        public static Grid operator +(Grid grid, Vector3[] vectorField)
+        {
+            for (int y = 0; y < grid.length; y++)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    grid.vertices[y * grid.width + x] += vectorField[y * grid.width + x];
+                }
+            }
+
+            return grid;
+        }
+
+        public static Grid operator -(Grid grid, float[] heightfield2)
+        {
+            for (int y = 0; y < grid.length; y++)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    grid.vertices[y * grid.width + x] -= Vector3.up * heightfield2[y * grid.width + x];
+                }
+            }
+
+            return grid;
+        }
+
+        public static Grid operator -(Grid grid, Vector3[] vectorField)
+        {
+            for (int y = 0; y < grid.length; y++)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    grid.vertices[y * grid.width + x] -= vectorField[y * grid.width + x];
+                }
+            }
+
+            return grid;
+        }
+
+        public static Grid operator +(Grid grid, float height)
+        {
+            for (int y = 0; y < grid.length; y++)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    grid.vertices[y * grid.width + x] += Vector3.up * height;
+                }
+            }
+
+            return grid;
+        }
+
+        public static Grid operator -(Grid grid, float height)
+        {
+            for (int y = 0; y < grid.length; y++)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    grid.vertices[y * grid.width + x] -= Vector3.up * height;
+                }
+            }
+
+            return grid;
+        }
+
         public void AddHeights(float[] heights)
         {
             for (int y = 0; y < length; y++)
