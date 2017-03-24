@@ -8,6 +8,9 @@ public class TerrainTile : MonoBehaviour
 
     public Vector2 offset;
 
+    public int tileVertices = 64;
+    public float width = 100;
+
     void Start()
     {
         Generate();
@@ -22,7 +25,9 @@ public class TerrainTile : MonoBehaviour
 
     void Generate()
     {
-        Grid grid = Grid.Create(64, 64, 1);
+        float separation = width / (tileVertices - 1);
+
+        Grid grid = Grid.Create(64, 64, separation);
 
         Vector3[] points = grid.vertices;
 

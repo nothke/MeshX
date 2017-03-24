@@ -564,7 +564,8 @@ public class TreeNode
 
 public class MyOwnQuadTree : MonoBehaviour
 {
-    Tree tree;
+    [HideInInspector]
+    public Tree tree;
 
     public int maxDepth = 3;
 
