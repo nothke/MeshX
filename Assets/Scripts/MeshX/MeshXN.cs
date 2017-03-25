@@ -16,6 +16,11 @@ namespace MeshXtensions
         {
             return null;
         }
+
+        public Mesh ToMesh()
+        {
+            return MeshXN.Combine(this);
+        }
     }
 
     public class Surf : Compo

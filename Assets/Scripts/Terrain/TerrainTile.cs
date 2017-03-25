@@ -38,7 +38,18 @@ public class TerrainTile : MonoBehaviour
             points[i] = TerrainManager.e.GetWorldSurfacePoint(offset + points[i]) - offset;
         }
 
-        gameObject.InitMesh(MeshXN.Combine(grid));
+        /*
+        Vector3[] normals = new Vector3[grid.size];
+
+        for (int i = 0; i < grid.size; i++)
+        {
+            normals[i] = TerrainManager.e.GetWorldSurfaceNormal(offset + points[i]);
+        }*/
+
+        Mesh m = grid.ToMesh();
+        //m.normals = normals;
+
+        gameObject.InitMesh(m);
 
         if (GetComponent<MeshCollider>())
             GetComponent<MeshCollider>().sharedMesh = gameObject.GetComponent<MeshFilter>().sharedMesh;
