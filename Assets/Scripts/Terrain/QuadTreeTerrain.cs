@@ -63,6 +63,9 @@ public class QuadTreeTerrain : MonoBehaviour
             tile.width = quadTree.size / Mathf.Pow(2, treeNode.depth);
 
             terrains.Add(tile.gameObject);
+            
+            if (treeNode.depth == quadTree.maxDepth)
+                tile.gameObject.AddComponent<MeshCollider>();
         }
     }
 }

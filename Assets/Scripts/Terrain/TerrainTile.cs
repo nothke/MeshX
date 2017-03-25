@@ -8,7 +8,7 @@ public class TerrainTile : MonoBehaviour
 
     public Vector2 offset;
 
-    public int tileVertices = 64;
+    public int tileVertices = 32;
     public float width = 100;
 
     void Start()
@@ -27,7 +27,7 @@ public class TerrainTile : MonoBehaviour
     {
         float separation = width / (tileVertices - 1);
 
-        Grid grid = Grid.Create(64, 64, separation);
+        Grid grid = Grid.Create(tileVertices, tileVertices, separation);
 
         Vector3[] points = grid.vertices;
 
@@ -39,6 +39,9 @@ public class TerrainTile : MonoBehaviour
         }
 
         gameObject.InitMesh(MeshXN.Combine(grid));
+
+        if (GetComponent<MeshCollider>())
+            GetComponent<MeshCollider>().sharedMesh = gameObject.GetComponent<MeshFilter>().sharedMesh;
     }
 
     Vector3 GetV3Offset()

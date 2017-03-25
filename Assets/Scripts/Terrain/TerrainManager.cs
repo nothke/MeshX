@@ -19,7 +19,9 @@ public class TerrainManager : MonoBehaviour
         float perlin2 = Mathf.PerlinNoise(frequency2 * point.x, frequency2 * point.z) * gain2;
         float perlin3 = Mathf.PerlinNoise(frequency * 2 * point.x, frequency * 2 * point.z) * gain / 2;
 
-        float h = perlin + perlin2;
+        float perlin05 = Mathf.PerlinNoise(1000 + frequency * 0.5f * point.x, frequency * 0.5f * point.z) * gain * 2;
+
+        float h = perlin + perlin2 + perlin3 + perlin05;
 
         return new Vector3(point.x, h, point.z);
     }
