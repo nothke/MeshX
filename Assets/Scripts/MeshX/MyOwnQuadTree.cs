@@ -641,7 +641,7 @@ public class MyOwnQuadTree : MonoBehaviour
                 tree.SplitToPoints(childPs, maxDepth);
                 tree.BalanceT();
 
-                Debug.Log(minWidth + " " + childPs[0] + " " + inTile);
+                //Debug.Log(minWidth + " " + childPs[0] + " " + inTile);
 
                 if (QuadTreeTerrain.e)
                 {
