@@ -17,7 +17,7 @@ public class TerrainManager : MonoBehaviour
 
     void Start()
     {
-        noiseMethod = Noise.perlinMethods[2];
+        noiseMethod = Noise.valueMethods[2];
     }
 
     public Vector3 GetWorldSurfacePoint(Vector3 point)
@@ -32,11 +32,12 @@ public class TerrainManager : MonoBehaviour
 
         float h = perlin + perlin2 + perlin3 + perlin05;*/
 
-        NoiseSample sample = Noise.Sum(noiseMethod, point, 0.002f, 6, 2, 0.5f) * 500;
+        NoiseSample sample = Noise.Sum(noiseMethod, point, 0.002f, 10, 2, 0.5f) * 500;
 
         float h = sample.value;
 
-        if (h < 0) h = 0;
+        if (h < -100) h = -200;
+        else if (h < 0) h = 0;
 
         return new Vector3(point.x, h, point.z);
     }

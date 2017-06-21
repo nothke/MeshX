@@ -5,11 +5,14 @@ using MeshXtensions;
 
 public class TerrainTile : MonoBehaviour
 {
+    public Rect bounds;
 
     public Vector2 offset;
 
     public int tileVertices = 32;
     public float width = 100;
+
+    public Material material;
 
     void Start()
     {
@@ -49,7 +52,7 @@ public class TerrainTile : MonoBehaviour
         Mesh m = grid.ToMesh();
         //m.normals = normals;
 
-        gameObject.InitMesh(m);
+        gameObject.InitMesh(m, material);
 
         if (GetComponent<MeshCollider>())
             GetComponent<MeshCollider>().sharedMesh = gameObject.GetComponent<MeshFilter>().sharedMesh;
