@@ -1,3 +1,5 @@
+Note: this library is currently unsupported, and has not been updated in a while. There are things I've learned in the mean time to make it much more efficient, but I do not currently have time to update MeshX library. Stay tuned and I might update at some point.
+
 # MeshX
 Mesh extensions for unity
 
