@@ -71,14 +71,18 @@ namespace MeshXtensions
                 t++;
             }
 
+            int vertNum = vertices.Length;
+
             for (int m = 0; m < meshTs.Length; m++)
             {
                 for (int i = 0; i < meshTs[m].triangles.Length; i++)
                 {
-                    _triangles[t] = meshTs[m].triangles[i];
+                    _triangles[t] = meshTs[m].triangles[i].Offset(vertNum);
 
                     t++;
                 }
+
+                vertNum += meshTs[m].vertices.Length;
             }
 
             vertices = _vertices;
@@ -101,6 +105,18 @@ namespace MeshXtensions
 
             return m;
         }
+
+        public void Translate(Vector3 by)
+        {
+            for (int i = 0; i < vertices.Length; i++)
+                vertices[i] += by;
+        }
+
+        public void Scale(float by)
+        {
+            for (int i = 0; i < vertices.Length; i++)
+                vertices[i] *= by;
+        }
     }
 
     public static class MeshTPrimitive
@@ -113,6 +129,10 @@ namespace MeshXtensions
             meshT.vertices[1] = new Vector3(-size.x * 0.5f, size.y * 0.5f);
             meshT.vertices[2] = new Vector3(size.x * 0.5f, -size.y * 0.5f);
             meshT.vertices[3] = new Vector3(size.x * 0.5f, size.y * 0.5f);
+
+            meshT.normals = new Vector3[4];
+            for (int i = 0; i < 4; i++)
+                meshT.normals[i] = Vector3.back;
 
             meshT.triangles = new Triangle[2];
             meshT.triangles[0] = new Triangle(0, 1, 2);

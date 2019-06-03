@@ -19,6 +19,7 @@ namespace MeshXtensions
         public List<Vector2> uvs;
         public List<Triangle> triangles;
         public List<Color> colors;
+        //public List<int> tris;
 
         #region Transformations
 
@@ -31,6 +32,20 @@ namespace MeshXtensions
 
             for (int vert = 0; vert < vertexCount; vert++)
                 vertices[vert] += by;
+        }
+
+        public void Scale(Vector3 by)
+        {
+            if (vertices == null || by == Vector3.one) return;
+            if (vertices.Count == 0) return;
+
+            int vertexCount = vertices.Count;
+
+            for (int vert = 0; vert < vertexCount; vert++)
+                vertices[vert] = new Vector3(
+                    vertices[vert].x * by.x,
+                    vertices[vert].y * by.y,
+                    vertices[vert].z * by.z);
         }
 
         public void Rotate(float angle, Vector3 axis)
@@ -46,6 +61,18 @@ namespace MeshXtensions
             for (int vert = 0; vert < vertexCount; vert++)
             {
                 vertices[vert] = qAngle * vertices[vert];
+            }
+        }
+
+        public void AddAsTris(List<int> tris)
+        {
+            triangles = new List<Triangle>();
+
+            int ct = tris.Count;
+
+            for (int i = 0; i < ct; i += 3)
+            {
+                triangles.Add(new Triangle(tris[i], tris[i + 1], tris[i + 2]));
             }
         }
 
@@ -88,6 +115,13 @@ namespace MeshXtensions
             m.SetTangents(tangents);
             m.SetUVs(0, uvs);
             m.SetColors(colors);
+
+            /*
+            if (this.tris != null)
+            {
+                m.SetTriangles(this.tris, 0, true);
+                return m;
+            }*/
 
             List<int> tris = new List<int>();
 

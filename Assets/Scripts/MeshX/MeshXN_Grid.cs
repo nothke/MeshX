@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace MeshXtensions
 {
-    public class Grid : Surf
+    public class GridMesh : Surf
     {
         public int width = 2;
 
@@ -12,17 +12,17 @@ namespace MeshXtensions
 
         public int size { get { return vertices.Length; } }
 
-        public Grid(int width, params Vector3[] points) : base(points)
+        public GridMesh(int width, params Vector3[] points) : base(points)
         {
             this.width = width;
         }
 
-        public Grid(int width, params float[] pointCoords) : base(pointCoords)
+        public GridMesh(int width, params float[] pointCoords) : base(pointCoords)
         {
             this.width = width;
         }
 
-        public static Grid Create(int width, int length, float separation)
+        public static GridMesh Create(int width, int length, float separation)
         {
             Vector3[] points = new Vector3[width * length];
 
@@ -34,10 +34,10 @@ namespace MeshXtensions
                 }
             }
 
-            return new Grid(width, points);
+            return new GridMesh(width, points);
         }
 
-        public static Grid operator +(Grid grid, float[] heightfield2)
+        public static GridMesh operator +(GridMesh grid, float[] heightfield2)
         {
             for (int y = 0; y < grid.length; y++)
             {
@@ -50,7 +50,7 @@ namespace MeshXtensions
             return grid;
         }
 
-        public static Grid operator +(Grid grid, Vector3[] vectorField)
+        public static GridMesh operator +(GridMesh grid, Vector3[] vectorField)
         {
             for (int y = 0; y < grid.length; y++)
             {
@@ -63,7 +63,7 @@ namespace MeshXtensions
             return grid;
         }
 
-        public static Grid operator -(Grid grid, float[] heightfield2)
+        public static GridMesh operator -(GridMesh grid, float[] heightfield2)
         {
             for (int y = 0; y < grid.length; y++)
             {
@@ -76,7 +76,7 @@ namespace MeshXtensions
             return grid;
         }
 
-        public static Grid operator -(Grid grid, Vector3[] vectorField)
+        public static GridMesh operator -(GridMesh grid, Vector3[] vectorField)
         {
             for (int y = 0; y < grid.length; y++)
             {
@@ -89,7 +89,7 @@ namespace MeshXtensions
             return grid;
         }
 
-        public static Grid operator +(Grid grid, float height)
+        public static GridMesh operator +(GridMesh grid, float height)
         {
             for (int y = 0; y < grid.length; y++)
             {
@@ -102,7 +102,7 @@ namespace MeshXtensions
             return grid;
         }
 
-        public static Grid operator -(Grid grid, float height)
+        public static GridMesh operator -(GridMesh grid, float height)
         {
             for (int y = 0; y < grid.length; y++)
             {
