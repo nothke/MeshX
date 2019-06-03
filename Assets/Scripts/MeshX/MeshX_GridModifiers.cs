@@ -9,7 +9,7 @@ namespace MeshXtensions
     {
         // HEIGHT MODS:
 
-        public static float[] MOD_SmoothSide(this Grid grid, float[] heights, int side = 0, int smoothWidth = 10, float targetHeight = 0)
+        public static float[] MOD_SmoothSide(this GridMesh grid, float[] heights, int side = 0, int smoothWidth = 10, float targetHeight = 0)
         {
             if (smoothWidth == 0) return heights;
 
@@ -35,7 +35,7 @@ namespace MeshXtensions
             return heights;
         }
 
-        public static float[] MOD_SpatialRidgedGrid(this Grid grid,
+        public static float[] MOD_SpatialRidgedGrid(this GridMesh grid,
             float frequency, float scale,
             float xSeparation = 1, float ySeparation = 1,
             float xOffset = 0, float yOffset = 0, float absPlane = 0.5f)
@@ -63,7 +63,7 @@ namespace MeshXtensions
             return heights;
         }
 
-        public static float[] MOD_SpatialPerlinGrid(this Grid grid,
+        public static float[] MOD_SpatialPerlinGrid(this GridMesh grid,
             float frequency, float scale,
             float xSeparation = 1, float ySeparation = 1,
             float xOffset = 0, float yOffset = 0)
@@ -84,7 +84,7 @@ namespace MeshXtensions
             return heights;
         }
 
-        public static float[] MOD_PerlinGrid(this Grid grid, float frequency, float scale, float xOffset = 0, float yOffset = 0)
+        public static float[] MOD_PerlinGrid(this GridMesh grid, float frequency, float scale, float xOffset = 0, float yOffset = 0)
         {
             float[] heights = new float[grid.width * grid.length];
 
@@ -99,7 +99,7 @@ namespace MeshXtensions
             return heights;
         }
 
-        public static float[] MOD_CanyonPerlinGrid(this Grid grid, float frequency, float scale)
+        public static float[] MOD_CanyonPerlinGrid(this GridMesh grid, float frequency, float scale)
         {
             float[] heights = new float[grid.width * grid.length];
 
@@ -118,7 +118,7 @@ namespace MeshXtensions
             return heights;
         }
 
-        public static float[] MOD_RidgedPerlinGrid(this Grid grid, float frequency, float scale)
+        public static float[] MOD_RidgedPerlinGrid(this GridMesh grid, float frequency, float scale)
         {
             float[] heights = new float[grid.width * grid.length];
 

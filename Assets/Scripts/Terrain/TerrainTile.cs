@@ -30,7 +30,7 @@ public class TerrainTile : MonoBehaviour
     {
         float separation = width / (tileVertices - 1);
 
-        Grid grid = Grid.Create(tileVertices, tileVertices, separation);
+        GridMesh grid = GridMesh.Create(tileVertices, tileVertices, separation);
 
         Vector3[] points = grid.vertices;
 

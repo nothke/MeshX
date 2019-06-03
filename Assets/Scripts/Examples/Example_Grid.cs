@@ -12,7 +12,7 @@ public class Example_Grid : MonoBehaviour
     void Start()
     {
 
-        Grid g = Grid.Create(width, width, separation);
+        GridMesh g = GridMesh.Create(width, width, separation);
 
         float[] f = g.MOD_RidgedPerlinGrid(0.01f, 20);
         float[] f2 = g.MOD_RidgedPerlinGrid(0.08f, 3);
